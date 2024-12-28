@@ -5,7 +5,7 @@ import rl "vendor:raylib"
 
 main :: proc() {
 	rl.SetTraceLogLevel(.WARNING)
-	rl.SetTargetFPS(60)
+	rl.SetTargetFPS(120)
 	rl.SetConfigFlags({ .MSAA_4X_HINT })
 
 	rl.InitWindow(SCREEN, SCREEN, "DODGE")
