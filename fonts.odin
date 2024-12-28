@@ -8,7 +8,7 @@ Fonts :: struct {
 		lg: rl.Font,
 		md: rl.Font,
 	},
-	option: rl.Font,
+	option, tip: rl.Font,
 	league, spiegel, beaufort: rl.Font,
 }
 
@@ -18,7 +18,8 @@ load_fonts :: proc() -> Fonts {
 	fonts.title.xl = rl.LoadFontEx("assets/League.otf", 64, nil, 127)
 	fonts.title.lg = rl.LoadFontEx("assets/League.otf", 48, nil, 127)
 	fonts.title.md = rl.LoadFontEx("assets/League.otf", 32, nil, 127)
-	fonts.option = rl.LoadFontEx("assets/beaufort/BeaufortforLOL-Regular.otf", 48, nil, 127)
+	fonts.option = rl.LoadFontEx("assets/beaufort/BeaufortforLOL-Bold.otf", 64, nil, 127)
+	fonts.tip = rl.LoadFontEx("assets/beaufort/BeaufortforLOL-Medium.otf", 24, nil, 127)
 	fonts.spiegel = rl.LoadFontEx("assets/spiegel/Spiegel-Regular.otf", 16, nil, 127)
 	fonts.beaufort = rl.LoadFontEx("assets/beaufort/BeaufortforLOL-Regular.otf", 24, nil, 127)
 	return fonts
@@ -28,6 +29,7 @@ unload_fonts :: proc(fonts: Fonts) {
 	rl.UnloadFont(fonts.title.xl)
 	rl.UnloadFont(fonts.title.lg)
 	rl.UnloadFont(fonts.title.md)
+	rl.UnloadFont(fonts.tip)
 	rl.UnloadFont(fonts.option)
 	rl.UnloadFont(fonts.league)
 	rl.UnloadFont(fonts.spiegel)
