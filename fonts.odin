@@ -17,7 +17,7 @@ load_fonts :: proc() -> Fonts {
 	fonts.league = rl.LoadFontEx("assets/League.otf", 32, nil, 127)
 	fonts.title.xl = rl.LoadFontEx("assets/League.otf", 64, nil, 127)
 	fonts.title.lg = rl.LoadFontEx("assets/League.otf", 48, nil, 127)
-	fonts.title.md = rl.LoadFontEx("assets/League.otf", 32, nil, 127)
+	fonts.title.md = rl.LoadFontEx("assets/League.otf", 32, nil, 127) // TODO(XENOBAS): Fix this font throws a warning on load or paint idk
 	fonts.option = rl.LoadFontEx("assets/beaufort/BeaufortforLOL-Bold.otf", 64, nil, 127)
 	fonts.tip = rl.LoadFontEx("assets/beaufort/BeaufortforLOL-Medium.otf", 24, nil, 127)
 	fonts.spiegel = rl.LoadFontEx("assets/spiegel/Spiegel-Regular.otf", 16, nil, 127)

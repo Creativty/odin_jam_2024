@@ -23,16 +23,20 @@ make_stage_splash :: proc() -> Stage {
 		rl.DrawTextEx(font_jam, text_jam, position_jam, f32(font_jam.baseSize), 1.0, rl.WHITE)
 		rl.DrawTextEx(font_made, text_made, position_made, f32(font_made.baseSize), 1.0, rl.WHITE)
 	}
+
 	stage.update = proc(outline: ^Outline, dt: f32) {
 		if (rl.GetTime() > DURATION_SPLASH) {
 			transition_outline(outline, .Menu)
 			return
 		}
 	}
+
 	stage.on_enter = proc(scenario: ^Outline) {
 	}
+
 	stage.on_leave = proc(scenario: ^Outline) {
 	}
+
 	stage.data = nil
 	return stage
 }
