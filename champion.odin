@@ -1,5 +1,6 @@
 package jam
 
+import math "core:math"
 import la "core:math/linalg"
 import rl "vendor:raylib"
 
@@ -29,8 +30,18 @@ make_champion :: proc() -> Champion {
 draw_champion :: proc(c: Champion) {
 	using rl
 
+	rec := Rectangle {
+		x = c.position.x,
+		y = c.position.y,
+		width = c.size * 2,
+		height = c.size * 2,
+	}
+	rot_vec := la.normalize(c.position - c.target)
+	rot_rad := math.atan2(rot_vec.y, rot_vec.x)
+	rot_deg := rot_rad * 180 / math.PI
 	DrawRectangle(i32(c.target.x), i32(c.target.y), i32(c.size / 2), i32(c.size / 2), C_LIME)
-	DrawCircle(i32(c.position.x), i32(c.position.y), c.size, C_RED)
+	DrawRectanglePro(rec, c.size, rot_deg, C_RED)
+	// DrawCircle(i32(c.position.x), i32(c.position.y), c.size, C_RED)
 }
 
 update_champion :: proc(c: ^Champion, dt: f32) {
