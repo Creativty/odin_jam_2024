@@ -209,7 +209,7 @@ draw_in_game :: proc(o: Outline, data: Stage_Play) {
 
 update_post_game :: proc(o: ^Outline, data: ^Stage_Play, dt: f32) {
 	data.postgame_elapsed += dt
-	if rl.IsKeyPressed(.SPACE) {
+	if rl.IsKeyPressed(.ENTER) {
 		data.postgame_elapsed += DURATION_POSTGAME
 	}
 	if data.postgame_elapsed >= DURATION_POSTGAME {
