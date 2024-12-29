@@ -48,6 +48,12 @@ make_stage_menu :: proc() -> Stage {
 		} else if rl.IsKeyPressed(.ENTER) || rl.IsKeyPressed(.SPACE) {
 			switch data.option_index {
 			case 0:
+				play_data := &outline.stages[.Play].data.(Stage_Play)
+				play_data^ = Stage_Play{
+					state = .Timeout,
+					champion = make_champion(),
+					spawner_active = true,
+				}
 				transition_outline(outline, .Play)
 			case 1:
 				outline.is_running = false

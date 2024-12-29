@@ -1,5 +1,6 @@
 package jam
 
+import "core:fmt"
 import "core:math"
 import la "core:math/linalg"
 import rl "vendor:raylib"
@@ -42,19 +43,30 @@ draw_projectile :: proc(p: Projectile) {
 	DrawCircle(i32(p.position.x), i32(p.position.y), p.base_size, C_ORANGE)
 }
 
+proj_close, proj_flat, proj_orig: [2]f32
+
+angle_radians :: proc(origin: [2]f32, point: [2]f32) -> f32 {
+	vec_unit := la.normalize0(point - origin)
+	return math.atan2(vec_unit.y, vec_unit.x)
+}
+
 hit_test_projectile :: proc(p: Projectile, c: Champion) -> bool {
-	rect := rl.Rectangle {
-		x = c.position.x,
-		y = c.position.y,
+	rect := rl.Rectangle{
+		x = c.position.x - c.size,
+		y = c.position.y - c.size,
 		width = c.size * 2,
 		height = c.size * 2,
 	}
-	rot_vec := la.normalize(c.position - c.target)
-	rot_rad := math.atan2(rot_vec.y, rot_vec.x)
-	rot_deg := rot_rad * 180 / math.PI
 
-	x_flat := math.cos(rot_deg) * (p.position.x - c.position.x) - math.sin(rot_deg) * (p.position.y - c.position.y) + c.position.x
-	y_flat := math.sin(rot_deg) * (p.position.x - c.position.x) + math.cos(rot_deg) * (p.position.y - c.position.y) + c.position.y
+	rot_rad := angle_radians(c.position, c.target)
+
+	x_orig := (rect.x + rect.width  / 2)
+	y_orig := (rect.y + rect.height / 2)
+	proj_orig = [2]f32{ x_orig, y_orig }
+
+	x_flat := math.cos(rot_rad) * (p.position.x - x_orig) - math.sin(rot_rad) * (p.position.y - y_orig) + x_orig
+	y_flat := math.sin(rot_rad) * (p.position.x - x_orig) + math.cos(rot_rad) * (p.position.y - y_orig) + y_orig
+	proj_flat = [2]f32{ x_flat, y_flat }
 
 	x_close: f32
 	if x_flat < rect.x do x_close = rect.x
@@ -66,5 +78,7 @@ hit_test_projectile :: proc(p: Projectile, c: Champion) -> bool {
 	else if y_flat > rect.y + rect.height do y_close = rect.y + rect.height
 	else do y_close = y_flat
 
-	return la.distance([2]f32{ x_close, y_close }, [2]f32{ x_flat, y_flat }) <= p.base_size
+	proj_close = [2]f32{ x_close, y_close }
+	dist := la.distance([2]f32{ x_close, y_close }, [2]f32{ x_flat, y_flat })
+	return dist <= p.base_size
 }

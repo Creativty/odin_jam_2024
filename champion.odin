@@ -31,12 +31,10 @@ make_champion :: proc() -> Champion {
 draw_champion :: proc(c: Champion) {
 	using rl
 
-	rot_vec := la.normalize(c.position - c.target)
-	rot_rad := math.atan2(rot_vec.y, rot_vec.x)
-	rot_deg := rot_rad * 180 / math.PI
-	if math.is_nan(rot_deg) do rot_deg = 0
+	rot_rad := angle_radians(c.position, c.target)
+	rot_deg := math.to_degrees(rot_rad)
 
-	rec_target := Rectangle {
+	rec_target := Rectangle{
 		x = c.target.x,
 		y = c.target.y,
 		width = c.size,
@@ -50,20 +48,16 @@ draw_champion :: proc(c: Champion) {
 		width = c.size * 2,
 		height = c.size * 2,
 	}
-	DrawRectanglePro(rec_champion, c.size, rot_deg, C_RED)
+	DrawRectanglePro(rec_champion, c.size, rot_deg, rl.WHITE)
 }
 
 update_champion :: proc(c: ^Champion, dt: f32) {
 	using rl
 
 	mouse := GetMousePosition()
+	epsilon := c.size / 4
 	if IsMouseButtonPressed(.RIGHT) do c.target = mouse
-	if IsKeyPressed(.F) {
-		c.position += la.normalize(mouse - c.position) * c.magnitude_flash
-	} else {
-		epsilon := c.size / 4
-		if la.distance(c.position, c.target) > epsilon {
-			c.position += la.normalize(c.target - c.position) * (c.speed_base * c.speed_modifier) * dt
-		}
+	if la.distance(c.position, c.target) > epsilon {
+		c.position += la.normalize(c.target - c.position) * (c.speed_base * c.speed_modifier) * dt
 	}
 }
