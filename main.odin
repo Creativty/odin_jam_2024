@@ -1,6 +1,8 @@
 package jam
 
 import "core:fmt"
+import "core:time"
+import "core:math/rand"
 import rl "vendor:raylib"
 
 main :: proc() {
@@ -15,6 +17,9 @@ main :: proc() {
 	defer unload_fonts(fonts)
 
 	rl.SetExitKey(.KEY_NULL)
+
+	seed := time.now()
+	rand.reset(u64(seed._nsec))
 
 	champ := make_champion()
 	outline := make_outline(fonts)

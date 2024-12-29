@@ -155,9 +155,9 @@ update_in_game :: proc(o: ^Outline, data: ^Stage_Play, dt: f32) {
 		CENTER :: SCREEN / 2
 		MAGNITUDE :: SCREEN
 		count := 3 + data.score / 9
-		offset := rand.float32() * 0.05
+		offset := rand.float32() * (math.PI / 4)
 		for i in 0..<count {
-			rads := 2 * math.PI * ((f32(i) + offset) / f32(count))
+			rads := 2 * math.PI * ((f32(i)) / f32(count)) + offset
 			x, y := math.cos(rads), math.sin(rads)
 			target := [2]f32{ CENTER, CENTER } - [2]f32{ x, y } * MAGNITUDE
 			position := [2]f32{ CENTER, CENTER } + [2]f32{ x, y } * MAGNITUDE
@@ -183,27 +183,19 @@ update_in_game :: proc(o: ^Outline, data: ^Stage_Play, dt: f32) {
 		}
 	}
 	update_champion(&data.champion, dt)
-	//update_particles(&data.particles, dt)
+}
+
+draw_in_game_graphics :: proc(o: Outline, data: Stage_Play) {
+	draw_champion(data.champion)
+	for p in data.projectiles do draw_projectile(p)
 }
 
 draw_in_game :: proc(o: Outline, data: Stage_Play) {
-	draw_champion(data.champion)
-	for p in data.projectiles do draw_projectile(p)
+	draw_in_game_graphics(o, data)
 	{
 		text_line := fmt.caprintf("You have %d points", data.score)
 		defer delete(text_line)
 		measure := draw_text_debug(o, text_line, { 16, 16 })
-	}
-	{
-		text_line := fmt.caprintf("fps: %d / 120, projectiles: %d", rl.GetFPS(), len(data.projectiles))
-		defer delete(text_line)
-		measure := draw_text_debug(o, text_line, { 16, 32 })
-	}
-	{
-		angle := math.to_degrees(angle_radians(data.champion.position, data.champion.target))
-		text_line := fmt.caprintf("angle: %4.2f degrees", angle)
-		defer delete(text_line)
-		measure := draw_text_debug(o, text_line, { 16, 48 })
 	}
 }
 
@@ -221,6 +213,28 @@ update_post_game :: proc(o: ^Outline, data: ^Stage_Play, dt: f32) {
 draw_post_game :: proc(o: Outline, data: Stage_Play) {
 	using rl
 
-	draw_in_game(o, data)
-	DrawRectangle(0, 0, SCREEN, SCREEN, { 0x75, 0x0e, 0x21, 0x21 })
+	draw_in_game_graphics(o, data)
+	DrawRectangle(0, 0, SCREEN, SCREEN, { 0x19, 0x19, 0x19, 0x80 })
+	{
+		font_tip := o.fonts.tip
+		font_points := o.fonts.title.xl
+		font_gameover := o.fonts.title.sm
+
+		text_tip: cstring = "Press Enter to restart"
+		text_points := fmt.caprintf("%d points", data.score)
+		text_gameover: cstring = "GAME OVER"
+		defer delete(text_points)
+
+		measure_tip := rl.MeasureTextEx(font_tip, text_tip, f32(font_tip.baseSize), 1.0)
+		measure_points := rl.MeasureTextEx(font_points, text_points, f32(font_points.baseSize), 1.0)
+		measure_gameover := rl.MeasureTextEx(font_gameover, text_gameover, f32(font_gameover.baseSize), 1.0)
+
+		position_gameover := ([2]f32{ SCREEN, SCREEN } - measure_gameover) / 2 - [2]f32{ 0, measure_points.y * 1.5 }
+		position_points := (([2]f32{ SCREEN, SCREEN }) - measure_points) / 2
+		position_tip := [2]f32{ (SCREEN - measure_tip.x) / 2, SCREEN - measure_tip.y - 32 }
+
+		rl.DrawTextEx(font_gameover, text_gameover, position_gameover, f32(font_gameover.baseSize), 1.0, rl.WHITE)
+		rl.DrawTextEx(font_points, text_points, position_points, f32(font_points.baseSize), 1.0, rl.WHITE)
+		rl.DrawTextEx(font_tip, text_tip, position_tip, f32(font_tip.baseSize), 1.0, rl.WHITE)
+	}
 }
