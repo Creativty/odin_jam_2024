@@ -154,14 +154,20 @@ update_in_game :: proc(o: ^Outline, data: ^Stage_Play, dt: f32) {
 		// Spawn
 		CENTER :: SCREEN / 2
 		MAGNITUDE :: SCREEN
+
 		count := 3 + data.score / 9
-		offset := rand.float32() * (math.PI / 4)
+		offset := rand.float32() * (math.PI / f32(count))
 		for i in 0..<count {
-			rads := 2 * math.PI * ((f32(i)) / f32(count)) + offset
-			x, y := math.cos(rads), math.sin(rads)
-			target := [2]f32{ CENTER, CENTER } - [2]f32{ x, y } * MAGNITUDE
+			angle := (2 * math.PI * f32(i) / f32(count)) + offset
+			x, y := math.cos(angle), math.sin(angle)
+
 			position := [2]f32{ CENTER, CENTER } + [2]f32{ x, y } * MAGNITUDE
-			append(&data.projectiles, make_projectile(position, target))
+			target := [2]f32{ CENTER, CENTER } - [2]f32{ x, y } * MAGNITUDE
+
+			mod_speed: f32 = 1
+			if count >= 4 && i % 2 == 0 do mod_speed *= 1.15
+			if count >= 7 && i % 2 == 1 do mod_speed *= 0.85
+			append(&data.projectiles, make_projectile(position, target, mod_speed))
 		}
 		// Reset
 		data.spawner_active = false

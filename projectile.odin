@@ -18,12 +18,12 @@ Projectile :: struct {
 	do_delete: bool,
 }
 
-make_projectile :: proc(position, target: [2]f32) -> Projectile {
+make_projectile :: proc(position, target: [2]f32, mod_speed: f32 = 1) -> Projectile {
 	p: Projectile
 	p.target = target
 	p.position = position
 	p.base_size = 8
-	p.base_speed = p.base_size * 50
+	p.base_speed = p.base_size * 50 * mod_speed
 	return p
 }
 
